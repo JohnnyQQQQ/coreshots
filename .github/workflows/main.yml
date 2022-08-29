@@ -20,4 +20,4 @@ jobs:
       run: go build -o coreshoot.exe main.go 
     
     - name: Run testing
-      run: go test -v
+      run: go test ./pkg/... -v
