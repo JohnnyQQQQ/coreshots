@@ -17,7 +17,7 @@ jobs:
         go-version: '1.18.0'
     
     - name: Run build
-      run: go build -o coreshoot.exe main.go 
+      run: go build -o coreshots.exe main.go 
     
     - name: Run testing
       run: go test ./pkg/... -v

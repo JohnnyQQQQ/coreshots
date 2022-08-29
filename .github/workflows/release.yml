@@ -15,5 +15,5 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         goos: windows
         goarch: amd64
-        binary_name: "coreshoot"
+        binary_name: "coreshots"
         compress_assets: false
