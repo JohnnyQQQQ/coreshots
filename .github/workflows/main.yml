@@ -1,0 +1,23 @@
+name: CICD
+on: 
+  push: 
+    branches: [master] 
+  pull_request:
+    branches: [master] 
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Setup Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '1.18.0'
+    
+    - name: Run build
+      run: go build -o coreshoot.exe main.go 
+    
+    - name: Run testing
+      run: go test -v
