@@ -50,6 +50,7 @@ func main() {
 		level.Error(logger).Log("err", err)
 		return
 	}
+	logger.Log("save_path", savingDir)
 	// setup proper cleanup after the program does exit
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
@@ -92,7 +93,7 @@ func createVideo(logger log.Logger, path string) {
 		level.Error(logger).Log("err", err)
 		return
 	}
-	logger.Log("msg", "starting video", "width", int32(screenshot.GetDisplayBounds(0).Dx()), "height", int32(screenshot.GetDisplayBounds(0).Dy()))
+	logger.Log("msg", "video format", "width", int32(screenshot.GetDisplayBounds(0).Dx()), "height", int32(screenshot.GetDisplayBounds(0).Dy()))
 	aw, err := mjpeg.New(filepath.Join(path, fmt.Sprintf("%s.avi", os.Args[1])),
 		int32(screenshot.GetDisplayBounds(0).Dx()),
 		int32(screenshot.GetDisplayBounds(0).Dy()),
