@@ -17,3 +17,5 @@ jobs:
         goarch: amd64
         binary_name: "coreshots"
         compress_assets: false
+        md5sum: false
+        sha256sum: true
