@@ -28,7 +28,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	croppedImage, err := tools.CropImage(img, WQHDSpawnCrop)
+	croppedImage, err := tools.CropImage(img, WQHDSpawnMapSniffCrop)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -38,7 +38,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	croppedImage, err = tools.CropImage(img, WQHDMapSniffCrop)
+	croppedImage, err = tools.CropImage(img, WQHDOverlayMapSniffCrop)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -65,9 +65,9 @@ func IsValidImage(img image.Image, mapType MapType) (bool, int, error) {
 func getCropRect(mod MapType) image.Rectangle {
 	switch mod {
 	case OverlayMap:
-		return WQHDMapSniffCrop
+		return WQHDOverlayMapSniffCrop
 	case SpawnMap:
-		return WQHDSpawnCrop
+		return WQHDSpawnMapSniffCrop
 	}
-	return WQHDMapSniffCrop
+	return WQHDOverlayMapSniffCrop
 }
