@@ -27,21 +27,24 @@ import (
 
 const screenshotInterval = time.Second * 10
 
+var mod string
+
 func init() {
+	recordCmd.PersistentFlags().StringVarP(&mod, "mod", "m", string(compare.SpawnMap),
+		fmt.Sprintf("either \"%s\" or \"%s\"", compare.SpawnMap, compare.OverlayMap))
 	recordCmd.AddCommand(recordStartCmd, recordConvertCmd)
 }
 
 var recordCmd = &cobra.Command{
-	Use: "record",
-	Run: func(cmd *cobra.Command, args []string) {},
+	Use:   "record",
+	Short: "Start a new recording or convert an existing one to a video",
 }
 
 var recordStartCmd = &cobra.Command{
 	Use:   "start [name]",
 	Args:  cobra.MinimumNArgs(1),
 	Short: "starts a new recording of a match",
-
-	Run: recordMatch,
+	Run:   recordMatch,
 }
 var recordConvertCmd = &cobra.Command{
 	Use:   "convert [name]",
@@ -53,6 +56,12 @@ var recordConvertCmd = &cobra.Command{
 func recordMatch(cmd *cobra.Command, args []string) {
 	logger := logger()
 	logger.Log("msg", "starting to capture screenshots")
+
+	if mod != string(compare.OverlayMap) && mod != string(compare.SpawnMap) {
+		level.Error(logger).Log("err", fmt.Errorf("mod flag has an invalid value, only %s and %s are accepted",
+			string(compare.SpawnMap), string(compare.OverlayMap)), "value", mod)
+		return
+	}
 
 	savePath, err := savePath(args[0])
 	if err != nil {
@@ -80,7 +89,7 @@ func recordMatch(cmd *cobra.Command, args []string) {
 			panic(err)
 		}
 
-		isValid, score, err := compare.IsValidImage(img, compare.OverlayMap)
+		isValid, score, err := compare.IsValidImage(img, compare.MapType(mod))
 		if !isValid {
 			if err != nil {
 				level.Error(logger).Log("err", err)
@@ -113,7 +122,11 @@ func convertRecording(cmd *cobra.Command, args []string) {
 		level.Error(logger).Log("err", err)
 		return
 	}
-	logger.Log("msg", "video format", "width", int32(screenshot.GetDisplayBounds(0).Dx()), "height", int32(screenshot.GetDisplayBounds(0).Dy()))
+
+	logger.Log("msg", "video format",
+		"width", int32(screenshot.GetDisplayBounds(0).Dx()),
+		"height", int32(screenshot.GetDisplayBounds(0).Dy()))
+
 	aw, err := mjpeg.New(filepath.Join(savePath, fmt.Sprintf("%s.avi", args[0])),
 		int32(screenshot.GetDisplayBounds(0).Dx()),
 		int32(screenshot.GetDisplayBounds(0).Dy()),
