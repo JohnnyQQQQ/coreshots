@@ -2,7 +2,7 @@ package compare
 
 import (
 	"bytes"
-	"coreshoots/pkg/tools"
+	"coreshots/pkg/tools"
 	_ "embed"
 	"image"
 	"log"

@@ -1,4 +1,4 @@
-module coreshoots
+module coreshots
 
 go 1.18
 

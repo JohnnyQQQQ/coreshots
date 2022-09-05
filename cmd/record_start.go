@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"coreshoots/pkg/compare"
+	"coreshots/pkg/compare"
 	"fmt"
 	"image/jpeg"
 	"os"

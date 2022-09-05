@@ -1,7 +1,7 @@
 package main
 
 import (
-	"coreshoots/cmd"
+	"coreshots/cmd"
 )
 
 func main() {

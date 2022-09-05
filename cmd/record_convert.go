@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"bytes"
-	"coreshoots/pkg/assets"
-	"coreshoots/pkg/compare"
-	"coreshoots/pkg/tools"
+	"coreshots/pkg/assets"
+	"coreshots/pkg/compare"
+	"coreshots/pkg/tools"
 	"fmt"
 	"image"
 	"image/color"
