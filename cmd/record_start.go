@@ -48,6 +48,8 @@ func recordStart(cmd *cobra.Command, args []string) {
 		return
 	}
 
+	valid, nonValid := 0, 0
+
 	// take a screenshot every n seconds
 	for {
 
@@ -61,6 +63,8 @@ func recordStart(cmd *cobra.Command, args []string) {
 			if err != nil {
 				level.Error(logger).Log("err", err)
 			}
+			nonValid++
+			logger.Log("msg", "screenshot was not valid", "non_valid_count", nonValid, "valid_count", valid)
 			continue
 		}
 
@@ -68,8 +72,8 @@ func recordStart(cmd *cobra.Command, args []string) {
 		file, _ := os.Create(filepath.Join(savePath, fileName))
 		jpeg.Encode(file, img, nil)
 		_ = file.Close()
-		logger.Log("filename", fileName, "score", score, "bounds", bounds)
-
+		valid++
+		logger.Log("msg", "screenshot was valid", "non_valid_count", nonValid, "valid_count", valid, "filename", fileName, "score", score, "bounds", bounds)
 		time.Sleep(screenshotInterval)
 	}
 }
