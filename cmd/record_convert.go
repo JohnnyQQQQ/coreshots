@@ -45,13 +45,16 @@ func recordConvert(cmd *cobra.Command, args []string) {
 		return
 	}
 
+	width := int32(screenshot.GetDisplayBounds(0).Dx())
+	height := int32(screenshot.GetDisplayBounds(0).Dy())
+
 	logger.Log("msg", "video format",
-		"width", int32(screenshot.GetDisplayBounds(0).Dx()),
-		"height", int32(screenshot.GetDisplayBounds(0).Dy()))
+		"width", width,
+		"height", height)
 
 	aw, err := mjpeg.New(filepath.Join(savePath, fmt.Sprintf("%s.avi", args[0])),
-		int32(screenshot.GetDisplayBounds(0).Dx()),
-		int32(screenshot.GetDisplayBounds(0).Dy()),
+		width,
+		height,
 		1)
 	if err != nil {
 		level.Error(logger).Log("err", err)
@@ -78,14 +81,12 @@ func recordConvert(cmd *cobra.Command, args []string) {
 			level.Error(logger).Log("err", err)
 			continue
 		}
-		img, err = tools.CropImage(img, compare.WQHDOverlayMapCrop)
+		img, err = tools.CropImage(img, cropBounds())
 		if err != nil {
 			level.Error(logger).Log("err", err)
 			continue
 		}
-		dc := gg.NewContext(
-			screenshot.GetDisplayBounds(0).Dx(),
-			screenshot.GetDisplayBounds(0).Dy())
+		dc := gg.NewContext(int(width), int(height))
 		dc.DrawImage(img, 0, 0)
 		img, _, err = image.Decode(bytes.NewReader(assets.CoreLogo))
 		if err != nil {
@@ -100,14 +101,13 @@ func recordConvert(cmd *cobra.Command, args []string) {
 		}
 		dc.DrawStringWrapped(
 			strings.ReplaceAll(f.Name()[:len(f.Name())-4], "_", ":"),
-			float64(screenshot.GetDisplayBounds(0).Dx()/2),
+			float64(width/2),
 			50,
 			0.5,
 			0.5,
 			10000,
 			1.5,
 			gg.AlignCenter)
-
 		buf := new(bytes.Buffer)
 		if err := jpeg.Encode(buf, dc.Image(), nil); err != nil {
 			level.Error(logger).Log("err", err)
@@ -123,4 +123,14 @@ func recordConvert(cmd *cobra.Command, args []string) {
 	if err != nil {
 		level.Error(logger).Log("err", err)
 	}
+}
+
+func cropBounds() image.Rectangle {
+	switch mod {
+	case string(compare.OverlayMap):
+		return compare.WQHDOverlayMapCrop
+	case string(compare.SpawnMap):
+		return compare.WQHDSpawnMapCrop
+	}
+	return compare.WQHDOverlayMapCrop
 }
