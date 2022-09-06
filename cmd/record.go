@@ -11,7 +11,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const screenshotInterval = time.Second * 10
+const (
+	// time to wait after a valid screenshot was taken before taking the next one
+	screenshotValidInterval = time.Second * 30
+	// time to wait after a non valid screentshot was taken before taking the next one
+	screenshotNonValidInterval = time.Second * 1
+)
 
 var mod string
 

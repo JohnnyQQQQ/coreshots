@@ -65,6 +65,7 @@ func recordStart(cmd *cobra.Command, args []string) {
 			}
 			nonValid++
 			logger.Log("msg", "screenshot was not valid", "non_valid_count", nonValid, "valid_count", valid)
+			time.Sleep(screenshotNonValidInterval)
 			continue
 		}
 
@@ -74,6 +75,6 @@ func recordStart(cmd *cobra.Command, args []string) {
 		_ = file.Close()
 		valid++
 		logger.Log("msg", "screenshot was valid", "non_valid_count", nonValid, "valid_count", valid, "filename", fileName, "score", score, "bounds", bounds)
-		time.Sleep(screenshotInterval)
+		time.Sleep(screenshotValidInterval)
 	}
 }
