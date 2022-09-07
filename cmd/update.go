@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"coreshots/pkg/version"
 	"crypto/sha256"
 	"fmt"
 	"io"
@@ -37,8 +38,15 @@ func update(cmd *cobra.Command, args []string) {
 		return
 	}
 
+	if stableVersion == version.Current {
+		logger.Log("msg", "you have already the newest version running",
+			"current_version", version.Current,
+			"latest_version", stableVersion)
+		return
+	}
+
 	logger.Log("msg", "upgrading binary", "path", currentBinPath, "stable_version", stableVersion)
-	
+
 	binaryFileName := "coreshots.exe"
 	shaFileName := "coreshots.exe.sha256"
 	binaryURL := assetURL(stableVersion, binaryFileName)
