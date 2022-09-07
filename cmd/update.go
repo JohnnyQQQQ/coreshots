@@ -22,6 +22,7 @@ var updateCmd = &cobra.Command{
 }
 
 const repoURL = "https://github.com/JohnnyQQQQ/coreshots"
+const stableURL = "https://raw.githubusercontent.com/JohnnyQQQQ/coreshots/master/stable.txt"
 
 func update(cmd *cobra.Command, args []string) {
 	logger := logger()
@@ -30,12 +31,18 @@ func update(cmd *cobra.Command, args []string) {
 		level.Error(logger).Log("err", err)
 		return
 	}
-	latestVersion := "v0.0.1-beta.3"
-	logger.Log("msg", "upgrading binary", "path", currentBinPath)
+	stableVersion, err := latestVersion(stableURL)
+	if err != nil {
+		level.Error(logger).Log("err", err)
+		return
+	}
+
+	logger.Log("msg", "upgrading binary", "path", currentBinPath, "stable_version", stableVersion)
+	
 	binaryFileName := "coreshots.exe"
 	shaFileName := "coreshots.exe.sha256"
-	binaryURL := assetURL(latestVersion, binaryFileName)
-	shaURL := assetURL(latestVersion, shaFileName)
+	binaryURL := assetURL(stableVersion, binaryFileName)
+	shaURL := assetURL(stableVersion, shaFileName)
 	logger.Log("msg", "downloading binary", "binary", binaryURL, "sha256", shaURL)
 	tmpDir, err := ioutil.TempDir("", "coreshot-update-*")
 	if err != nil {
@@ -75,11 +82,24 @@ func update(cmd *cobra.Command, args []string) {
 		level.Error(logger).Log("err", err)
 		return
 	}
-	logger.Log("msg", "successfully updated", "new_version", latestVersion)
+	logger.Log("msg", "successfully updated", "new_version", stableVersion)
 }
 
 func assetURL(version, assetName string) string {
 	return fmt.Sprintf("%s/releases/download/%s/%s", repoURL, version, assetName)
+}
+
+func latestVersion(url string) (string, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil
 }
 
 func downloadFile(fileURL, filePath string) error {
