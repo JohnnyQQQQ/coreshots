@@ -18,3 +18,4 @@ jobs:
         compress_assets: false
         md5sum: false
         sha256sum: true
+        binary_name: not_coreshot
