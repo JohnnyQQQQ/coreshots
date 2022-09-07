@@ -19,3 +19,4 @@ jobs:
         md5sum: false
         sha256sum: true
         binary_name: not_coreshot
+        asset_name: coreshot
