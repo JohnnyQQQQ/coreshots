@@ -18,4 +18,3 @@ jobs:
         compress_assets: false
         md5sum: false
         sha256sum: true
-        asset_name: coreshots
