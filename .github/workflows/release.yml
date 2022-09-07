@@ -10,6 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: "replace version"
+      run: |
+        VERSION=$(cat stable.txt)
+        sed -i -e "s/{{VERSION}}/$VERSION/g" cmd/version.go
     - uses: wangyoucao577/go-release-action@v1.30
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
